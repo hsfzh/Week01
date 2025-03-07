@@ -20,6 +20,14 @@
 #include "ImGui/imgui_impl_dx11.h"
 #include "imGui/imgui_impl_win32.h"
 
+float RadtoDeg(float a) {
+	return a * 180.0f / PI;
+}
+
+float DegtoRad(float a) {
+	return a * PI / 180.0f;
+}
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -42,6 +50,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 //카메라 전역변수
 UCamera mainCamera;
+
+bool bIsOrthogonal = false;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
@@ -95,6 +105,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0;
 	float angle = 0;
+	float newFOV = 45;
+	float cameraPosition[3] = { mainCamera.position.X, mainCamera.position.Y, mainCamera.position.Z };
+	float cameraRotation[3] = { 0, 0, 0 };
 	while (bIsExit == false)
 	{
 		QueryPerformanceCounter(&startTime);
@@ -134,8 +147,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
-
 		ImGui::Begin("Jungle Property Window");
+		/*
 		ImGui::Text("Hello Jungle World!");
 		ImGui::Text("camera position: %f, %f, %f", mainCamera.position.X, mainCamera.position.Y, mainCamera.position.Z);
 		ImGui::Text("camera up direction: %f, %f, %f", mainCamera.upDirection.X, mainCamera.upDirection.Y, mainCamera.upDirection.Z);
@@ -146,6 +159,33 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::Text("click position: %f, %f, %f", InputManager::Instance().ptInitial.X, InputManager::Instance().ptInitial.Y, InputManager::Instance().ptInitial.Z);
 		ImGui::Text("current position: %f, %f, %f", InputManager::Instance().ptCurrent.X, InputManager::Instance().ptCurrent.Y, InputManager::Instance().ptCurrent.Z);
 		ImGui::Text("dragged distance: %f, %f, %f", InputManager::Instance().change.X, InputManager::Instance().change.Y, InputManager::Instance().change.Z);
+		*/
+		cameraPosition[0] = mainCamera.position.X;
+		cameraPosition[1] = mainCamera.position.Y;
+		cameraPosition[2] = mainCamera.position.Z;
+
+		cameraRotation[0] = RadtoDeg(mainCamera.rotation.X);
+		cameraRotation[1] = RadtoDeg(mainCamera.rotation.Y);
+		cameraRotation[2] = RadtoDeg(mainCamera.rotation.Z);
+
+		ImGui::Checkbox("Orthogonal", &bIsOrthogonal);
+		ImGui::InputFloat("FOV", & newFOV, 0.0f, 0.0f, "%.3f");
+		float fov = DegtoRad(newFOV);
+		if (fov != mainCamera.FOV) {
+			mainCamera.ChangeFOV(fov);
+		}
+		ImGui::InputFloat3("Camera Location", cameraPosition, "%.3f");
+		FVector newPos(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
+		if (newPos != mainCamera.position) {
+			mainCamera.SetPosition(newPos);
+		}
+		ImGui::InputFloat3("Camera Rotation", cameraRotation, "%.3f");
+		FVector newRot(DegtoRad(cameraRotation[0]), DegtoRad(cameraRotation[1]), DegtoRad(cameraRotation[2]));
+		if (newRot != mainCamera.rotation) {
+			mainCamera.Rotate(FMatrix::RotationMatrix(newRot.X - mainCamera.rotation.X, newRot.Y - mainCamera.rotation.Y, newRot.Z - mainCamera.rotation.Z));
+			mainCamera.rotation = newRot;
+		}
+		ImGui::Text("rotation matrix:\n%s", FMatrix::RotationMatrix(newRot.X, newRot.Y, newRot.Z).PrintMatrix().c_str());
 		ImGui::End();
 
 		ImGui::Render();

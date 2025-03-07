@@ -28,6 +28,7 @@ UCamera::UCamera(FVector pos, FVector targetpos, FVector up) : originalPos(pos),
 	float aspectRatio = 1.0f;
 	float nearZ = 0.1f;
 	float farZ = 1000.0f;
+	rotation = FVector::Zero;
 }
 
 FMatrix UCamera::CalculateViewMatrix(FVector pos, FVector targetpos, FVector up)
@@ -68,6 +69,7 @@ void UCamera::Rotate(FMatrix rotationMatrix)
 	upDirection = rotationMatrix * upDirection;
 	upDirection.Normalize();
 	viewMatrix = CalculateViewMatrix(position, targetPos, upDirection);
+	rotation = GetRotation();
 }
 
 void UCamera::Translate(FVector offset)
@@ -80,7 +82,32 @@ void UCamera::Translate(FVector offset)
 
 void UCamera::ChangeFOV(float fov)
 {
-	projectionMatrix = CalculateProjectionMatrix(fov);
+	FOV = fov;
+	projectionMatrix = CalculateProjectionMatrix(FOV);
+}
+
+void UCamera::SetPosition(FVector pos)
+{
+	originalPos = pos;
+	position = originalPos;
+	targetPos = facing + position;
+	viewMatrix = CalculateViewMatrix(position, targetPos, upDirection);
+}
+
+FVector UCamera::GetRotation()
+{
+	FVector zAxis = facing.Normalize();
+	FVector yAxis = upDirection;
+	FVector xAxis = yAxis.Cross(zAxis).Normalize();
+	FMatrix R(xAxis.X, yAxis.X, zAxis.X, 0.0f,
+			  xAxis.Y, yAxis.Y, zAxis.Y, 0.0f,
+			  xAxis.Z, yAxis.Y, zAxis.Z, 0.0f,
+			  0.0f, 0.0f, 0.0f, 1.0f);
+	R.Transpose();
+	float angleY = asinf(R.M[0][2]);              // 피치
+	float angleZ = atan2f(-R.M[0][1], R.M[0][0]);   // 요
+	float angleX = atan2f(-R.M[1][2], R.M[2][2]);   // 롤
+	return FVector(angleX, angleY, angleZ);
 }
 
 

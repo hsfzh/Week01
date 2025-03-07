@@ -16,6 +16,11 @@ bool FVector::operator==(const FVector& other)
 	return X == other.X && Y == other.Y && Z == other.Z;
 }
 
+bool FVector::operator!=(const FVector& other)
+{
+	return X != other.X || Y != other.Y || Z != other.Z;;
+}
+
 FVector& FVector::operator+=(const FVector& other)
 {
 	X += other.X;

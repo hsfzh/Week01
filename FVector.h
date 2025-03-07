@@ -15,6 +15,8 @@ struct FVector
 
 	bool operator==(const FVector& other);
 
+	bool operator!=(const FVector& other);
+
 	FVector& operator+=(const FVector& other);
 
 	FVector& operator-=(const FVector& other);

@@ -10,6 +10,8 @@ public:
 	FVector originalUp;
 	FVector upDirection;
 	FVector facing;
+	FVector rotation;
+	float FOV;
 	FMatrix viewMatrix;
 	FMatrix projectionMatrix;
 
@@ -20,4 +22,6 @@ public:
 	void Rotate(FMatrix rotationMatrix);
 	void Translate(FVector offset);
 	void ChangeFOV(float fov);
+	void SetPosition(FVector pos);
+	FVector GetRotation();
 };
