@@ -13,10 +13,8 @@ struct FVertexSimple
 
 struct FConstants
 {
-	FMatrix primitive;
-	FMatrix view;
-	FMatrix perspective;
-	FConstants(FMatrix a = FMatrix::Identity, FMatrix b = FMatrix::Identity, FMatrix c = FMatrix::Identity) : primitive(a), view(b), perspective(c) {}
+	FMatrix MVP;
+	FConstants(FMatrix a = FMatrix::Identity) : MVP(a) {}
 };
 
 class URenderer
@@ -68,9 +66,7 @@ public:
 			DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR);
 			FConstants* constants = (FConstants*)constantbufferMSR.pData;
 			{
-				constants->primitive = constantData.primitive;
-				constants->view = constantData.view;
-				constants->perspective = constantData.perspective;
+				constants->MVP = constantData.MVP;
 			}
 			DeviceContext->Unmap(ConstantBuffer, 0);
 		}

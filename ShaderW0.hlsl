@@ -12,6 +12,7 @@ struct PS_INPUT
 
 cbuffer constants : register(b0)
 {
+    row_major float4x4 MVP;
     row_major float4x4 primitive;
     row_major float4x4 view;
     row_major float4x4 perspective;
@@ -22,9 +23,7 @@ PS_INPUT mainVS(VS_INPUT input)
     PS_INPUT output;
     
     float4 position = input.position;
-    position = mul(primitive, position);
-    position = mul(view, position);
-    output.position = mul(perspective, position);
+    output.position = mul(MVP, position);
 
     output.color = input.color;
 

@@ -127,7 +127,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			0.0f, 0.0f, 0.0f, 1.0f);
 		scale.ChangeLastToOne();
 		overallChange = translation * rotation * scale;
-		renderer.UpdateConstant(FConstants(overallChange, mainCamera.viewMatrix, mainCamera.projectionMatrix.Transpose()));
+		FMatrix MVP = mainCamera.projectionMatrix.Transpose() * mainCamera.viewMatrix * overallChange;
+		renderer.UpdateConstant(FConstants(MVP));
 		renderer.RenderPrimitive(vertexBufferCube, numVerticesCube);
 		//renderer.RenderPrimitive(vertexBufferTriangle, numVerticesTriangle);
 		ImGui_ImplDX11_NewFrame();
