@@ -34,14 +34,14 @@ LRESULT InputManager::ProcessMessage(HWND hWnd, UINT message, WPARAM wParam, LPA
     case WM_KEYUP:
         // 예: 키가 떼어졌을 때의 처리
         break;
-    case WM_LBUTTONDOWN:
+    case WM_RBUTTONDOWN:
         bDragging = true;
         ptInitial.X = GET_X_LPARAM(lParam);
         ptInitial.Y = GET_Y_LPARAM(lParam);
         cameraInitialYaxis = mainCamera.upDirection;
         cameraInitialZaxis = mainCamera.facing;
         break;
-    case WM_LBUTTONUP:
+    case WM_RBUTTONUP:
         // 왼쪽 버튼 해제 시 드래그 종료
         bDragging = false;
         break;
