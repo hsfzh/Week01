@@ -62,8 +62,10 @@ FMatrix UCamera::CalculateProjectionMatrix(float fov, float aspect, float nearZ,
 
 void UCamera::Rotate(FMatrix rotationMatrix)
 {
-	position = rotationMatrix * originalPos;
-	upDirection = rotationMatrix * originalUp;
+	//position = rotationMatrix * originalPos;
+	facing = rotationMatrix * facing;
+	targetPos = facing + position;
+	upDirection = rotationMatrix * upDirection;
 	upDirection.Normalize();
 	viewMatrix = CalculateViewMatrix(position, targetPos, upDirection);
 }

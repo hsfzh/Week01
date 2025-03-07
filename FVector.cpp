@@ -32,6 +32,14 @@ FVector& FVector::operator-=(const FVector& other)
 	return *this;
 }
 
+FVector& FVector::operator*=(const FVector& other)
+{
+	X *= other.X;
+	Y *= other.Y;
+	Z *= other.Z;
+	return *this;
+}
+
 FVector FVector::operator*(float scalar) const
 {
 	return FVector(X * scalar, Y * scalar, Z * scalar);

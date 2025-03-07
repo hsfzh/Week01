@@ -8,7 +8,12 @@ extern UCamera mainCamera;
 
 class InputManager {
 public:
-	
+	static bool bDragging;
+	static FVector ptInitial;
+	static FVector ptCurrent;
+	static FVector cameraInitialYaxis;
+	static FVector cameraInitialZaxis;
+	static FVector change;
 public:
 	static InputManager& Instance();
 	LRESULT ProcessMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -16,4 +21,6 @@ public:
 	void OnKeySPressed();
 	void OnKeyDPressed();
 	void OnKeyFPressed();
+	void OnDrag(FVector yAxis, FVector zAxis, FVector angle);
+	FVector ScreenToWorld(float x, float y);
 };

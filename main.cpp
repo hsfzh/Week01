@@ -116,7 +116,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		angle += 0.01f;
 		renderer.Prepare();
 		renderer.PrepareShader();
-		mainCamera.Rotate(FMatrix::RotationMatrix(FVector(1, 0, 0), PI/4.0f));
+		//mainCamera.Rotate(FMatrix::RotationMatrix(FVector(1, 0, 0), PI/4.0f));
 		//mainCamera.Translate(FMatrix::TranslationMatrix(FVector(0, sin(angle), 0)));
 		//mainCamera.ChangeFOV(PI/3.0f);
 		FMatrix rotation = FMatrix::RotationMatrix(0, 0, 0);
@@ -141,6 +141,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::Text("camera facing: %f, %f, %f", mainCamera.facing.X, mainCamera.facing.Y, mainCamera.facing.Z);
 		ImGui::Text("camera looking at: %f, %f, %f", mainCamera.targetPos.X, mainCamera.targetPos.Y, mainCamera.targetPos.Z);
 		ImGui::Text("view Matrix:\n%s", mainCamera.viewMatrix.PrintMatrix().c_str());
+		ImGui::Text("is dragging: %s", InputManager::Instance().bDragging ? "true" : "false");
+		ImGui::Text("click position: %f, %f, %f", InputManager::Instance().ptInitial.X, InputManager::Instance().ptInitial.Y, InputManager::Instance().ptInitial.Z);
+		ImGui::Text("current position: %f, %f, %f", InputManager::Instance().ptCurrent.X, InputManager::Instance().ptCurrent.Y, InputManager::Instance().ptCurrent.Z);
+		ImGui::Text("dragged distance: %f, %f, %f", InputManager::Instance().change.X, InputManager::Instance().change.Y, InputManager::Instance().change.Z);
 		ImGui::End();
 
 		ImGui::Render();
